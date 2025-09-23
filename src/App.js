@@ -14,7 +14,7 @@ function App() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://10.8.0.41:5678/getAllData');
+        const response = await fetch('http://192.168.10.226:5678/getAllData');
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

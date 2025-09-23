@@ -1,24 +1,65 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ConversationList from './components/ConversationList';
+import ConversationDetail from './components/ConversationDetail';
 import './App.css';
 
 function App() {
+  const [conversations, setConversations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Função assíncrona para buscar os dados da sua API
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://10.8.0.41:5678/getAllData');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setConversations(data);
+        setError(null);
+      } catch (err) {
+        console.error("Falha ao buscar dados: ", err);
+        setError("Não foi possível carregar os dados. Verifique se a API está rodando em http://localhost:5678/getAllData e tente novamente.");
+        setConversations([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []); // O array vazio [] garante que a busca seja feita apenas uma vez, quando o componente é montado.
+
+  // Renderização condicional com base no estado
+  if (loading) {
+    return <div className="app-status">Carregando dados da API...</div>;
+  }
+
+  if (error) {
+    return <div className="app-status error">{error}</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="app">
+        <Routes>
+          {/* Passamos os dados buscados como "props" para os componentes filhos */}
+          <Route 
+            path="/" 
+            element={<ConversationList conversations={conversations} />} 
+          />
+          <Route 
+            path="/chat/:chatId" 
+            element={<ConversationDetail conversations={conversations} />} 
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

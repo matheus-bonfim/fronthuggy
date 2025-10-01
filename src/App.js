@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ConversationList from './components/ConversationList';
 import ConversationDetail from './components/ConversationDetail';
+import Analysis2Detail from './components/Analysis2Detail.js';
 import './App.css';
+import Analysis2 from './components/Analysis2.js';
 
 function App() {
   const [conversations, setConversations] = useState([]);
@@ -14,13 +16,14 @@ function App() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://192.168.10.226:5678/getAllData');
+        const response = await fetch('http://192.168.10.226:5678/getAllData2');
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
+        console.log(data);
         setConversations(data);
         setError(null);
       } catch (err) {
@@ -51,10 +54,18 @@ function App() {
           {/* Passamos os dados buscados como "props" para os componentes filhos */}
           <Route 
             path="/" 
-            element={<ConversationList conversations={conversations} />} 
+            element={<Analysis2 conversations={conversations} />} 
           />
           <Route 
             path="/chat/:chatId" 
+            element={<Analysis2Detail conversations={conversations} />} 
+          />
+          <Route 
+            path="/analysis2" 
+            element={<ConversationList conversations={conversations} />} 
+          />
+          <Route 
+            path="/chat2/:chatId" 
             element={<ConversationDetail conversations={conversations} />} 
           />
         </Routes>

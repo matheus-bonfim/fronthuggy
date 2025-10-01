@@ -4,10 +4,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import ConversationList from './components/ConversationList';
 import ConversationDetail from './components/ConversationDetail';
+import Analysis2Detail from './components/Analysis2Detail.js';
 import './App.css';
 
 // A URL do seu backend. Lembre-se que o ngrok gera uma URL nova a cada vez que é iniciado.
 const BACKEND_URL = "https://34fc6bcaeeef.ngrok-free.app";
+import Analysis2 from './components/Analysis2.js';
 
 function App() {
   const [conversations, setConversations] = useState([]);
@@ -71,10 +73,18 @@ function App() {
           {/* Passamos os dados buscados como "props" para os componentes filhos */}
           <Route 
             path="/" 
-            element={<ConversationList conversations={conversations} />} 
+            element={<Analysis2 conversations={conversations} />} 
           />
           <Route 
             path="/chat/:chatId" 
+            element={<Analysis2Detail conversations={conversations} />} 
+          />
+          <Route 
+            path="/analysis2" 
+            element={<ConversationList conversations={conversations} />} 
+          />
+          <Route 
+            path="/chat2/:chatId" 
             element={<ConversationDetail conversations={conversations} />} 
           />
         </Routes>
